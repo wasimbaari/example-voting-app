@@ -2,49 +2,51 @@
 
 A simple distributed application running across multiple Docker containers.
 
-## Getting started
+Enterprise DevSecOps Voting Application
+Note: This project is a specialized fork of the original Docker Example Voting App. While the core microservices remain the same, this repository transforms the original "local-only" example into a production-ready Enterprise DevSecOps Pipeline deployed on AWS.
 
-Download [Docker Desktop](https://www.docker.com/products/docker-desktop) for Mac or Windows. [Docker Compose](https://docs.docker.com/compose) will be automatically installed. On Linux, make sure you have the latest version of [Compose](https://docs.docker.com/compose/install/).
+🚀 What I Added: The "Enterprise" Layer
+I have upgraded this basic example into a full-scale cloud-native architecture. The following components were added to implement industry-standard DevSecOps practices:
 
-This solution uses Python, Node.js, .NET, with Redis for messaging and Postgres for storage.
+🛡️ DevSecOps & Security
+SonarQube/SonarCloud Integration: Implemented Static Application Security Testing (SAST) to detect bugs, vulnerabilities, and code smells before deployment.
 
-Run in this directory to build and run the app:
+Automated Quality Gate: The pipeline is configured to fail if security standards are not met.
 
-```shell
-docker compose up
-```
+⚙️ CI/CD Automation
+GitHub Actions Pipeline: Created a multi-stage workflow that automates the entire lifecycle:
 
-The `vote` app will be running at [http://localhost:8080](http://localhost:8080), and the `results` will be at [http://localhost:8081](http://localhost:8081).
+Code Analysis: Automated SonarCloud scanning.
 
-Alternately, if you want to run it on a [Docker Swarm](https://docs.docker.com/engine/swarm/), first make sure you have a swarm. If you don't, run:
+Containerization: Multi-service Docker builds for Python, Node.js, and .NET.
 
-```shell
-docker swarm init
-```
+Image Management: Automated versioning and pushing to Docker Hub.
 
-Once you have your swarm, in this directory run:
+Continuous Deployment: Automated "Rolling Updates" to AWS EKS.
 
-```shell
-docker stack deploy --compose-file docker-stack.yml vote
-```
+☁️ Infrastructure as Code (IaC)
+Terraform: Completely automated the AWS infrastructure provisioning. No manual clicks in the console.
 
-## Run the app in Kubernetes
+Custom VPC: Designed a secure network with public/private subnets, Internet Gateways, and NAT Gateways.
 
-The folder k8s-specifications contains the YAML specifications of the Voting App's services.
+AWS EKS (Elastic Kubernetes Service): Provisioned a managed Kubernetes cluster with auto-scaling worker nodes (t3.small).
 
-Run the following command to create the deployments and services. Note it will create these resources in your current namespace (`default` if you haven't changed it.)
+🛠️ Skills & Technologies Reflected
+This updated project demonstrates mastery in the following domains:
 
-```shell
-kubectl create -f k8s-specifications/
-```
+Cloud Provider: AWS (EKS, VPC, IAM, EC2).
 
-The `vote` web app is then available on port 31000 on each host of the cluster, the `result` web app is available on port 31001.
+Containerization: Docker, Docker-Compose, Multi-stage builds.
 
-To remove them, run:
+Orchestration: Kubernetes (Deployments, Services, NodePorts, RBAC).
 
-```shell
-kubectl delete -f k8s-specifications/
-```
+IaC: Terraform (State management, Providers, Modules).
+
+CI/CD: GitHub Actions (Secrets management, Environments, Workflows).
+
+Security: SAST (SonarCloud), IAM Principle of Least Privilege.
+
+
 
 ## Architecture
 
@@ -55,6 +57,40 @@ kubectl delete -f k8s-specifications/
 * A [.NET](/worker/) worker which consumes votes and stores them in…
 * A [Postgres](https://hub.docker.com/_/postgres/) database backed by a Docker volume
 * A [Node.js](/result) web app which shows the results of the voting in real time
+
+* 🏗️ Updated Architecture
+The original microservices now run within a secure, automated cloud environment:
+
+Frontend (Python/Flask): Users vote on a public-facing interface.
+
+Broker (Redis): Fast, in-memory queue for incoming votes.
+
+Processor (.NET): A worker service that moves data from Redis to Postgres.
+
+Database (PostgreSQL): Persistent storage for all votes.
+
+Analytics (Node.js): Real-time results dashboard.
+
+🚦 Getting Started (Cloud Version)
+1. Provision Infrastructure
+Bash
+cd terraform
+terraform init
+terraform apply --auto-approve
+2. Configure Access
+Bash
+aws eks update-kubeconfig --name voting-app-cluster --region ap-south-1
+3. Deploy via Pipeline
+Simply push code to the main branch. GitHub Actions will handle the security scan, build, and deployment.
+
+📝 Project Takeaways
+This project showcases the ability to bridge the gap between Software Development and Cloud Operations. It focuses on:
+
+Reliability: Using K8s to ensure zero-downtime deployments.
+
+Scalability: Using EKS to handle traffic spikes.
+
+Security: Ensuring every line of code is scanned before it touches the cloud
 
 ## Notes
 
